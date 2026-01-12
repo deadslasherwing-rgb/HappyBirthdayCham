@@ -423,7 +423,7 @@ export const BOOK_PAGES: PageData[] = [
             {
                 id: 'p17-note',
                 type: ItemType.NOTE,
-                content: "Trước mắt mong cậu hãy tự tin lên cậu rất giỏi (nói từ 1 người có connection rộng) là người ưa nhìn (có chăm sóc tút tát bản thân) và có vú to phết (boing boing) rất hợp để làm vợ tớ và để tớ hy sinh vì cậu nhiều hơn nữa. Hai đứa gặp được nhau cũng kể ra là duyên và tớ rất thích cái duyên này.",
+                content: "Trước mắt mong cậu hãy tự tin lên cậu rất giỏi (nói từ 1 người có connection rộng) là người ưa nhìn (có chăm sóc tút tát bản thân) và là người quyến rũ rất hợp để làm vợ tớ và để tớ hy sinh vì cậu nhiều hơn nữa. Hai đứa gặp được nhau cũng kể ra là duyên và tớ rất thích cái duyên này.",
                 position: { x: 50, y: 20, rotate: -3 },
                 style: { width: '80%', bgColor: '#fdf4ff', zIndex: 20 }
             },
