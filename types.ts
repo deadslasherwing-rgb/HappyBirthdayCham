@@ -30,6 +30,5 @@ export interface PageData {
     id: number;
     items: BookItem[];
     pageNumberDisplay?: boolean;
-    isFinalPage?: boolean;
     backgroundStyle?: 'plain' | 'lined' | 'grid';
 }

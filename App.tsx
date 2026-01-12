@@ -39,28 +39,15 @@ const App: React.FC = () => {
   }, []);
 
   const totalSheets = sheets.length;
-
-  // Calculate the maximum index we can flip to.
-  // We want to stop exactly when the "Final Page" is visible.
+  
+  // LOGIC FIX: Xác định chỉ số lật tối đa.
+  // Nếu tổng số trang là chẵn (ví dụ 0..21 là 22 trang), thì trang cuối cùng (21) nằm ở MẶT PHẢI của tờ giấy cuối cùng.
+  // Nếu ta lật tờ này, sẽ ra mặt sau rỗng và "The End". 
+  // Để dừng lại ở trang 21 (người dùng coi là trang cuối), ta không cho phép lật tờ cuối cùng này.
+  // Công thức: Nếu số trang chẵn -> maxIndex = totalSheets - 1. Nếu lẻ -> maxIndex = totalSheets.
   const maxFlippedIndex = useMemo(() => {
-      const sheetIndexWithFinalFront = sheets.findIndex(s => s.front.isFinalPage);
-      if (sheetIndexWithFinalFront !== -1) {
-          // If final page is on the front, we stop BEFORE flipping this sheet.
-          // The sheet remains on the right side.
-          return sheetIndexWithFinalFront; 
-      }
-      
-      const sheetIndexWithFinalBack = sheets.findIndex(s => s.back?.isFinalPage);
-      if (sheetIndexWithFinalBack !== -1) {
-          // If final page is on the back, we MUST flip this sheet to see it.
-          // The sheet moves to the left side.
-          return sheetIndexWithFinalBack + 1; 
-      }
-
-      // Default behavior: allow flipping everything to see "The End" back cover
-      return sheets.length; 
-  }, [sheets]);
-
+     return BOOK_PAGES.length % 2 === 0 ? totalSheets - 1 : totalSheets;
+  }, [totalSheets]);
 
   // --- Navigation Handlers ---
 
@@ -135,7 +122,7 @@ const App: React.FC = () => {
                <BookPage page={BOOK_PAGES[0]} />
             </div>
 
-            {/* 2. Static Right Base (Empty/End) - Only visible if we flip past everything, which we might not do now */}
+            {/* 2. Static Right Base (Empty/End) */}
             <div className="absolute right-0 top-0 w-1/2 h-full z-0 bg-stone-100 rounded-r-md border-y border-r border-stone-300 shadow-xl overflow-hidden flex items-center justify-center">
                <div className="text-stone-300 font-serif-display italic">The End</div>
             </div>
@@ -147,8 +134,6 @@ const App: React.FC = () => {
               const baseZIndex = isFlipped ? index + 1 : (totalSheets - index) + 1;
               
               // Optimized transition:
-              // 1. Reduced duration to 0.6s for snappier feel.
-              // 2. Synchronized z-index delay with the transform duration exactly.
               const transitionStyle = isFlipped 
                 ? 'transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1.000), z-index 0s 0.6s' 
                 : 'transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1.000), z-index 0s';     

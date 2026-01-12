@@ -1,9 +1,7 @@
-import React, { useState, memo } from 'react';
+import React, { memo } from 'react';
 import { PageData, ItemType } from '../types';
 import { PhotoWidget } from './PhotoWidget';
 import { StickyNote } from './StickyNote';
-import { Heart, Check } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 interface BookPageProps {
     page: PageData;
@@ -12,29 +10,7 @@ interface BookPageProps {
 
 // Using memo to prevent re-renders when the parent 3D container rotates
 export const BookPage: React.FC<BookPageProps> = memo(({ page, isMobile }) => {
-    const [accepted, setAccepted] = useState(false);
-
-    const handleAccept = () => {
-        setAccepted(true);
-        const duration = 3000;
-        const animationEnd = Date.now() + duration;
-        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
-
-        const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
-
-        const interval: any = setInterval(function () {
-            const timeLeft = animationEnd - Date.now();
-
-            if (timeLeft <= 0) {
-                return clearInterval(interval);
-            }
-
-            const particleCount = 50 * (timeLeft / duration);
-            confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-            confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-        }, 250);
-    };
-
+    
     // Style for the paper pattern
     const getBackgroundClass = () => {
         switch (page.backgroundStyle) {
@@ -43,49 +19,6 @@ export const BookPage: React.FC<BookPageProps> = memo(({ page, isMobile }) => {
             default: return '';
         }
     };
-
-    if (page.isFinalPage) {
-        return (
-            <div className={`relative w-full h-full overflow-hidden p-6 md:p-12 flex flex-col items-center justify-center paper-texture ${getBackgroundClass()}`}>
-                {!accepted ? (
-                    <div className="flex flex-col items-center animate-fadeIn text-center space-y-8">
-                        <h2 className="font-serif-display text-3xl md:text-5xl text-gray-800 tracking-wide mb-2">
-                            Happy Birthday
-                        </h2>
-                        <div className="w-16 h-1 bg-red-400 rounded-full mb-6 opacity-70"></div>
-                        
-                        <p className="font-handwriting text-xl md:text-2xl text-gray-600 max-w-sm leading-relaxed mb-8">
-                            Và một điều cuối cùng tớ muốn nói... <br/>
-                            <span className="text-2xl md:text-3xl font-bold text-gray-800 block mt-4">
-                                "Quen tớ nhé?"
-                            </span>
-                        </p>
-
-                        <button 
-                            onClick={handleAccept}
-                            className="group relative inline-flex items-center justify-center px-8 py-3 text-lg font-medium text-white transition-all duration-200 bg-gray-900 font-serif-display rounded-full hover:bg-red-500 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transform hover:-translate-y-1"
-                        >
-                            <span className="mr-2">Yes</span>
-                            <Heart className="w-5 h-5 fill-current text-white group-hover:animate-ping" />
-                        </button>
-                    </div>
-                ) : (
-                    <div className="flex flex-col items-center justify-center animate-fadeInUp text-center">
-                        <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-6">
-                             <Check className="w-10 h-10 text-green-600" />
-                        </div>
-                        <h2 className="font-handwriting text-3xl md:text-4xl text-gray-800 font-bold mb-4">
-                            Tuyệt vời!
-                        </h2>
-                        <p className="font-serif-display text-gray-600">
-                            Cảm ơn cậu vì đã nói "Yes". <br/>
-                            Sinh nhật vui vẻ nhé! ❤️
-                        </p>
-                    </div>
-                )}
-            </div>
-        );
-    }
 
     return (
         <div className={`relative w-full h-full overflow-hidden paper-texture ${getBackgroundClass()}`}>
