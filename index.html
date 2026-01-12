@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday</title>
+    <!-- Tailwind via CDN is fine for quick setup -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Cập nhật font mới hỗ trợ tiếng Việt tốt hơn -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Pacifico&family=Patrick+Hand&display=swap" rel="stylesheet">
+    
+    <style>
+      /* Custom utilities for realistic book feel */
+      
+      /* Patrick Hand: Font viết tay rất đẹp và chuẩn tiếng Việt, thay cho Indie Flower */
+      .font-handwriting { font-family: 'Patrick Hand', cursive; }
+      
+      /* Pacifico: Font bay bướm, nét đậm vui tươi, thay cho Dancing Script */
+      .font-script { font-family: 'Pacifico', cursive; font-weight: 400; }
+      
+      /* Lora: Font có chân sang trọng, thay cho Playfair Display */
+      .font-serif-display { font-family: 'Lora', serif; }
+      
+      .book-shadow {
+        box-shadow: 
+          0 20px 30px -10px rgba(0, 0, 0, 0.2),
+          0 0 10px rgba(0,0,0,0.1);
+      }
+      
+      .spine-gradient {
+        background: linear-gradient(to right, 
+          rgba(0,0,0,0.05) 0%, 
+          rgba(0,0,0,0.1) 45%, 
+          rgba(0,0,0,0.15) 50%, 
+          rgba(0,0,0,0.1) 55%, 
+          rgba(0,0,0,0.05) 100%);
+      }
+
+      /* Paper texture effect */
+      .paper-texture {
+        background-color: #fdfbf7;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM32 63c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm57-13c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+      }
+
+      /* 3D Book Animation Styles */
+      .perspective-1500 {
+        perspective: 1500px;
+      }
+      
+      .preserve-3d {
+        transform-style: preserve-3d;
+      }
+
+      /* Page Faces Logic */
+      .page-face {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        overflow: hidden;
+        background-color: white; /* Fallback */
+      }
+      
+      .face-front {
+        transform: rotateY(0deg);
+        z-index: 2;
+      }
+      
+      .face-back {
+        transform: rotateY(180deg);
+        z-index: 1;
+      }
+
+      /* Ensure text remains sharp during transform */
+      .sheet-content {
+        transform: translateZ(1px); 
+      }
+
+      /* Balloon Animation */
+      @keyframes floatUp {
+        0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateY(-20vh) rotate(20deg); opacity: 0; }
+      }
+      
+      .animate-float {
+        animation: floatUp 8s linear infinite;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "canvas-confetti": "https://esm.sh/canvas-confetti@^1.9.4",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite": "https://esm.sh/vite@^7.3.1"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
+  </body>
+</html>
